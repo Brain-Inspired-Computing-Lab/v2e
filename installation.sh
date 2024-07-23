@@ -14,5 +14,7 @@ echo "Install V2E dependencies"
 python -m pip install -e .
 
 echo "Installing other dependencies"
+conda install conda-forge::loguru -y
+ conda install conda-forge::polars -y
 python -m pip install dv-processing
 python -m pip install 'pillow<10'
