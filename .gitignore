@@ -3,7 +3,7 @@
 *.pyc
 data/
 notebook/
-*.sh
+# *.sh
 aedat-text-test.txt
 input/*
 
