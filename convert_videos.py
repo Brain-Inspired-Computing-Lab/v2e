@@ -15,6 +15,8 @@ def convert_to_dvs(
     output_path: str,
 ) -> None:
     start_time = time.time()
+    # output csv is 346 x 260 (however, able to adjust output height and width manually
+    # get rid of --dvs346 and use the '--output_height' and '--output_width' options
     command = f"python3 v2e.py --dvs346 --no_preview option --skip_video_output --dvs_params clean -i {video_path} -o {output_path} --dvs_text {file_name}.csv"
     subprocess.run(command, shell=True)
     logger.info(f"Conversion took {time.time() - start_time} seconds")
