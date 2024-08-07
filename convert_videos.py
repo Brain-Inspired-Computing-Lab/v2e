@@ -1,6 +1,5 @@
 # import os
 
-import json
 import os
 import subprocess
 import time
@@ -17,7 +16,7 @@ def convert_to_dvs(
     start_time = time.time()
     # output csv is 346 x 260 (however, able to adjust output height and width manually
     # get rid of --dvs346 and use the '--output_height' and '--output_width' options
-    command = f"python3 v2e.py --dvs346 --no_preview option --skip_video_output --dvs_params clean -i {video_path} -o {output_path} --dvs_text {file_name}.csv"
+    command = f"python3 v2e.py --output_height 256 --output_width 256 --no_preview option --skip_video_output --dvs_params clean -i {video_path} -o {output_path} --dvs_text {file_name}.csv"
     subprocess.run(command, shell=True)
     logger.info(f"Conversion took {time.time() - start_time} seconds")
 
@@ -52,8 +51,7 @@ def post_process_dvs(
 
 def convert_videos() -> None:
     # Initialize the paths
-    INPUT_DIR = "/home/hwpark/work/bcl/wlasl-complete/videos"
-    NSLT100 = "/home/hwpark/work/bcl/wlasl-complete/nslt_100.json"
+    INPUT_DIR = "/home/hwpark/work/v2esample"
     OUTPUT_DIR = "output"
 
     # Create the output directory if it does not exist
@@ -67,9 +65,6 @@ def convert_videos() -> None:
             if entry.is_dir():
                 processed_files.append(entry.name)
 
-    # Get the list of classes
-    classes: dict = json.loads(open(NSLT100).read())
-
     # Iterate over the input directory
     with os.scandir(INPUT_DIR) as entries:
         for entry in entries:
@@ -79,7 +74,7 @@ def convert_videos() -> None:
                 output_path = f"{OUTPUT_DIR}/{file_name}"
 
                 # skip if already processed or not part of WLASL100
-                if file_name in processed_files or file_name not in classes.keys():
+                if file_name in processed_files:
                     logger.info(f"Skipping {entry.name}")
                     continue
 
