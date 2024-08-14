@@ -8,8 +8,8 @@ import polars as pl
 from loguru import logger
 
 # I/O PATHS
-INPUT_DIR = "/home/hwpark/work/ASL/asl_alphabet_train/asl_alphabet_train"
-OUTPUT_ROOT_DIR = "/home/hwpark/work/ASL/asl_alphabet_train/v2e_output"
+INPUT_DIR = "/home/young/hawon/asl_alphabet/asl_alphabet_train/asl_alphabet_train"
+OUTPUT_ROOT_DIR = "/home/young/hawon/asl_alphabet/asl_alphabet_train/v2e_output"
 
 # VIDEO GENERATION
 FRAME_RATE = 60
@@ -140,65 +140,25 @@ def post_process_dvs(
 
 
 if __name__ == "__main__":
-    A_DIR = f"{INPUT_DIR}/A"
-    C_DIR = f"{INPUT_DIR}/C"
-    L_DIR = f"{INPUT_DIR}/L"
+    with os.scandir(INPUT_DIR) as entries:
+        for entry in entries:
+            if not entry.is_dir():
+                continue
 
-    with os.scandir(A_DIR) as entries:
-        for i in range(1000):
-            entry = next(entries)
-            if entry.is_file():
-                logger.info(f"{i+1}/1000: Processing {entry.name}")
+            logger.warning(f"Processing Class {entry.name}")
 
-                full_path = entry.path
-                file_name = entry.name.split(".")[0]
+            alphabet_path = f"{INPUT_DIR}/{entry.name}"
 
-                generated_video_path, height, width = generate_video(
-                    file_name, full_path
-                )
-                convert_to_dvs(file_name, generated_video_path, height, width)
-                post_process_dvs(file_name)
+            with os.scandir(alphabet_path) as sub_entries:
+                for sub_entry in sub_entries:
+                    if sub_entry.is_file():
+                        logger.warning(f"Processing {sub_entry.name}")
 
-    with os.scandir(C_DIR) as entries:
-        for i in range(1000):
-            entry = next(entries)
-            if entry.is_file():
-                logger.info(f"{i+1}/1000: Processing {entry.name}")
+                        full_path = sub_entry.path
+                        file_name = sub_entry.name.split(".")[0]
 
-                full_path = entry.path
-                file_name = entry.name.split(".")[0]
-
-                generated_video_path, height, width = generate_video(
-                    file_name, full_path
-                )
-                convert_to_dvs(file_name, generated_video_path, height, width)
-                post_process_dvs(file_name)
-
-    with os.scandir(L_DIR) as entries:
-        for i in range(1000):
-            entry = next(entries)
-            if entry.is_file():
-                logger.info(f"{i+1}/1000: Processing {entry.name}")
-
-                full_path = entry.path
-                file_name = entry.name.split(".")[0]
-
-                generated_video_path, height, width = generate_video(
-                    file_name, full_path
-                )
-                convert_to_dvs(file_name, generated_video_path, height, width)
-                post_process_dvs(file_name)
-
-    # with os.scandir(INPUT_DIR) as entries:
-    #     for entry in entries:
-    #         if entry.is_file():
-    #             logger.info(f"Processing {entry.name}")
-
-    #             full_path = entry.path
-    #             file_name = entry.name.split(".")[0]
-
-    #             generated_video_path, height, width = generate_video(
-    #                 file_name, full_path
-    #             )
-    #             convert_to_dvs(file_name, generated_video_path, height, width)
-    #             post_process_dvs(file_name)
+                        generated_video_path, height, width = generate_video(
+                            file_name, full_path
+                        )
+                        convert_to_dvs(file_name, generated_video_path, height, width)
+                        post_process_dvs(file_name)
